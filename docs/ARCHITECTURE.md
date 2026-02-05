@@ -55,7 +55,7 @@ Within each module, we apply **Clean Architecture** (also known as Onion/Hexagon
 ```
                     ┌─────────────────────────────────────┐
                     │           API / Host                │
-                    │     (Controllers, Middleware)       │
+                    │   (Minimal API Endpoints, Middleware)│
                     └─────────────────┬───────────────────┘
                                       │
                     ┌─────────────────▼───────────────────┐
@@ -104,11 +104,11 @@ Within each module, we apply **Clean Architecture** (also known as Onion/Hexagon
 - Example: `PostgresVerificationRepository`, `OnfidoApiClient`
 
 #### API/Host Layer (Outermost)
-- HTTP API controllers and middleware
+- Minimal API endpoints and middleware
 - Request/response mapping
 - Authentication and authorization configuration
 - Dependency injection composition root
-- Example: `VerificationController`, `WebhookController`
+- Example: `ApplicantEndpoints`, `VerificationEndpoints`
 
 ### Dependency Rule
 
@@ -172,7 +172,7 @@ The persistence layer follows strict Clean Architecture principles:
 
 | Aspect | Decision |
 |--------|----------|
-| **ORM** | Entity Framework Core 8+ (only supported ORM) |
+| **ORM** | Entity Framework Core 10+ (only supported ORM) |
 | **Database** | PostgreSQL 14+ (only supported database) |
 | **Approach** | Code-first with EF Core migrations |
 | **Provider** | Npgsql.EntityFrameworkCore.PostgreSQL |
@@ -394,12 +394,12 @@ If strong module isolation becomes necessary:
 
 | Concern | Technology | Rationale |
 |---------|------------|-----------|
-| Runtime | .NET 8 LTS | Long-term support, performance, ecosystem |
+| Runtime | .NET 10 LTS | Long-term support, performance, ecosystem |
 | Database | PostgreSQL 14+ | ACID compliance, JSON support, proven reliability |
-| ORM | EF Core 8 | Strong .NET integration, migration support |
-| Provider | Npgsql | Mature PostgreSQL provider for EF Core |
+| ORM | EF Core 10 | Strong .NET integration, migration support |
+| Provider | Npgsql 10 | Mature PostgreSQL provider for EF Core |
 | Validation | FluentValidation | Expressive, testable validation rules |
-| CQRS | MediatR | Lightweight, well-adopted mediator pattern |
+| CQRS | Custom Mediator | Lightweight, reflection-based pipeline with explicit control |
 | Logging | Serilog | Structured logging, multiple sinks |
 | Testing | xUnit + NSubstitute | Modern test framework, clean mocking |
 | Containers | Docker | Consistent deployment, infrastructure as code |

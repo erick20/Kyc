@@ -353,34 +353,37 @@ services.AddKycAggregator(options =>
                      └───────────────────────────────────────────────┘
 ```
 
-### Webhook Controller
+### Webhook Endpoint
 
 ```csharp
-[ApiController]
-[Route("webhooks")]
-public class WebhooksController : ControllerBase
+// Using Minimal APIs
+public static class WebhookEndpoints
 {
-    [HttpPost("{providerId}")]
-    public async Task<IActionResult> HandleWebhook(
-        string providerId,
-        [FromBody] JsonDocument payload,
-        [FromHeader(Name = "X-Signature")] string? signature)
+    public static void MapWebhookEndpoints(this IEndpointRouteBuilder app)
     {
-        var provider = _providerRegistry.TryGetProvider(providerId);
-        if (provider is null)
-            return NotFound();
-        
-        var rawPayload = payload.RootElement.GetRawText();
-        
-        // Validate signature
-        if (!provider.ValidateWebhookSignature(rawPayload, signature ?? ""))
-            return Unauthorized();
-        
-        // Parse and process
-        var webhookEvent = provider.ParseWebhook(rawPayload);
-        await _webhookProcessor.ProcessAsync(providerId, webhookEvent);
-        
-        return Ok();
+        app.MapPost("webhooks/{providerId}", async (
+            string providerId,
+            JsonDocument payload,
+            [FromHeader(Name = "X-Signature")] string? signature,
+            IProviderRegistry providerRegistry,
+            IWebhookProcessor webhookProcessor) =>
+        {
+            var provider = providerRegistry.TryGetProvider(providerId);
+            if (provider is null)
+                return Results.NotFound();
+
+            var rawPayload = payload.RootElement.GetRawText();
+
+            // Validate signature
+            if (!provider.ValidateWebhookSignature(rawPayload, signature ?? ""))
+                return Results.Unauthorized();
+
+            // Parse and process
+            var webhookEvent = provider.ParseWebhook(rawPayload);
+            await webhookProcessor.ProcessAsync(providerId, webhookEvent);
+
+            return Results.Ok();
+        });
     }
 }
 ```

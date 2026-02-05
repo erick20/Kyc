@@ -273,9 +273,9 @@ services.AddAuthorization(options =>
         policy.RequireClaim("scope", "admin"));
 });
 
-// Apply to endpoints
-[Authorize(Policy = "WriteApplicants")]
-public async Task<IActionResult> CreateApplicant(...) { }
+// Apply to Minimal API endpoints
+app.MapPost("api/v1/applicants", CreateApplicant)
+    .RequireAuthorization("WriteApplicants");
 ```
 
 ## Webhook Security
@@ -581,26 +581,32 @@ public class DataRetentionService
 ### Data Subject Rights
 
 ```csharp
-[ApiController]
-[Route("api/v1/data-subjects")]
-public class DataSubjectController : ControllerBase
+// Using Minimal APIs
+public static class DataSubjectEndpoints
 {
-    // GDPR Article 15 - Right of access
-    [HttpGet("{email}/export")]
-    [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> ExportData(string email)
+    public static void MapDataSubjectEndpoints(this IEndpointRouteBuilder app)
     {
-        var data = await _dataExportService.ExportApplicantDataAsync(email);
-        return File(data, "application/json", $"data-export-{DateTime.UtcNow:yyyyMMdd}.json");
-    }
-    
-    // GDPR Article 17 - Right to erasure
-    [HttpDelete("{email}")]
-    [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> DeleteData(string email)
-    {
-        await _dataExportService.InitiateDeletionAsync(email);
-        return Accepted();
+        var group = app.MapGroup("api/v1/data-subjects")
+            .RequireAuthorization("Admin");
+
+        // GDPR Article 15 - Right of access
+        group.MapGet("{email}/export", async (
+            string email,
+            IDataExportService dataExportService) =>
+        {
+            var data = await dataExportService.ExportApplicantDataAsync(email);
+            return Results.File(data, "application/json",
+                $"data-export-{DateTime.UtcNow:yyyyMMdd}.json");
+        });
+
+        // GDPR Article 17 - Right to erasure
+        group.MapDelete("{email}", async (
+            string email,
+            IDataExportService dataExportService) =>
+        {
+            await dataExportService.InitiateDeletionAsync(email);
+            return Results.Accepted();
+        });
     }
 }
 ```

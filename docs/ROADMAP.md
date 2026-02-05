@@ -60,7 +60,7 @@ This document outlines the phased development plan for the KYC Aggregator system
 #### Application Layer
 - [ ] Commands: `CreateApplicant`, `StartVerification`, `ProcessWebhook`
 - [ ] Queries: `GetApplicant`, `GetVerification`, `ListVerifications`
-- [ ] MediatR pipeline with validation
+- [ ] Custom Mediator pipeline with validation
 - [ ] FluentValidation validators
 - [ ] Application service tests
 
@@ -82,9 +82,9 @@ This document outlines the phased development plan for the KYC Aggregator system
 - [ ] Sandbox testing
 
 #### API Layer
-- [ ] `ApplicantsController` (CRUD)
-- [ ] `VerificationsController` (start, get, list)
-- [ ] `WebhooksController` (Onfido)
+- [ ] `ApplicantEndpoints` (CRUD, Minimal API)
+- [ ] `VerificationEndpoints` (start, get, list, Minimal API)
+- [ ] `WebhookEndpoints` (Onfido, Minimal API)
 - [ ] Error handling middleware
 - [ ] Request/response logging
 - [ ] Swagger documentation

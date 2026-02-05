@@ -10,10 +10,11 @@ Kyc/
 │   ├── Kyc.Domain/                    # Core domain logic (innermost layer)
 │   ├── Kyc.Application/               # Use cases and application services
 │   ├── Kyc.Infrastructure/            # Data access, external integrations
-│   ├── Kyc.Api/                       # HTTP API host
+│   ├── Kyc.Api/                       # HTTP API host (Minimal APIs)
+│   ├── Kyc.AppHost/                   # .NET Aspire orchestration host
 │   ├── Kyc.ServiceDefaults/           # Shared hosting defaults (.NET Aspire ready)
 │   │
-│   ├── Providers/                     # KYC provider implementations
+│   ├── Providers/                     # KYC provider implementations (future)
 │   │   ├── Kyc.Providers.Abstractions/  # Provider interfaces and contracts
 │   │   ├── Kyc.Providers.Onfido/        # Onfido integration
 │   │   ├── Kyc.Providers.Jumio/         # Jumio integration
@@ -204,22 +205,19 @@ Kyc.Infrastructure/
 
 #### Kyc.Api
 
-HTTP API host and composition root.
+HTTP API host and composition root. Uses **Minimal APIs** (not controllers).
 
 ```
 Kyc.Api/
-├── Controllers/
-│   ├── ApplicantsController.cs
-│   ├── VerificationsController.cs
-│   └── WebhooksController.cs
+├── Endpoints/                         # Minimal API endpoint groups
+│   ├── ApplicantEndpoints.cs
+│   ├── VerificationEndpoints.cs
+│   └── WebhookEndpoints.cs
 │
 ├── Middleware/
 │   ├── ExceptionHandlingMiddleware.cs
 │   ├── CorrelationIdMiddleware.cs
 │   └── RequestLoggingMiddleware.cs
-│
-├── Filters/
-│   └── ApiKeyAuthorizationFilter.cs
 │
 ├── Models/
 │   ├── Requests/                      # API request models
@@ -238,6 +236,16 @@ Kyc.Api/
 ├── appsettings.json
 ├── appsettings.Development.json
 └── Kyc.Api.csproj
+```
+
+#### Kyc.AppHost
+
+.NET Aspire orchestration host for local development.
+
+```
+Kyc.AppHost/
+├── Program.cs                         # Aspire app host configuration
+└── Kyc.AppHost.csproj
 ```
 
 ### Provider Projects
@@ -340,20 +348,23 @@ tests/
 │   └── Common/
 │       └── ValidationBehaviorTests.cs
 │
-├── Kyc.Infrastructure.Tests/
+├── Kyc.Architecture.Tests/
+│   └── ArchitectureTests.cs           # Enforce layer dependencies
+│
+├── Kyc.Infrastructure.Tests/          # (future)
 │   ├── Persistence/
 │   │   └── VerificationRepositoryTests.cs
 │   └── Fixtures/
 │       └── DatabaseFixture.cs
 │
-├── Kyc.Api.Tests/
-│   ├── Controllers/
-│   │   └── VerificationsControllerTests.cs
+├── Kyc.Api.Tests/                     # (future)
+│   ├── Endpoints/
+│   │   └── ApplicantEndpointTests.cs
 │   └── Integration/
 │       └── VerificationFlowTests.cs
 │
-└── Kyc.Architecture.Tests/
-    └── ArchitectureTests.cs           # Enforce layer dependencies
+└── Kyc.Providers.Tests/              # (future)
+    └── ...
 ```
 
 ## Project References
@@ -361,10 +372,13 @@ tests/
 ```
 Dependency Flow (arrows show "depends on"):
 
+Kyc.AppHost
+  └──▶ Kyc.Api (orchestrates via .NET Aspire)
+
 Kyc.Api
   ├──▶ Kyc.Application
   ├──▶ Kyc.Infrastructure
-  ├──▶ Kyc.Providers.Onfido (and other providers)
+  ├──▶ Kyc.Providers.Onfido (and other providers, future)
   └──▶ Kyc.ServiceDefaults
 
 Kyc.Application

@@ -18,7 +18,7 @@ This document describes the PostgreSQL database schema design for the KYC Aggreg
 
 | Principle | Implementation |
 |-----------|----------------|
-| **ORM** | Entity Framework Core 8+ (only supported ORM) |
+| **ORM** | Entity Framework Core 10+ (only supported ORM) |
 | **Database** | PostgreSQL 14+ (only supported database) |
 | **Approach** | Code-first with EF Core migrations |
 | **Domain Isolation** | No EF Core attributes in Domain entities |

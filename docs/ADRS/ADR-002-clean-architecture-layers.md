@@ -69,7 +69,7 @@ We will use **Clean Architecture** with the following layer definitions:
 ```
 ┌────────────────────────────────────────────────────────────────┐
 │                          Kyc.Api                               │
-│  (Controllers, Middleware, Composition Root)                   │
+│  (Minimal API Endpoints, Middleware, Composition Root)          │
 ├────────────────────────────────────────────────────────────────┤
 │                     Kyc.Application                            │
 │  (Commands, Queries, Handlers, DTOs, Validators)               │
@@ -96,7 +96,7 @@ src/
 ├── Kyc.Domain/              # Entities, Value Objects, Domain Events
 ├── Kyc.Application/         # Use Cases, Commands/Queries, DTOs
 ├── Kyc.Infrastructure/      # EF Core, Repositories, External APIs
-├── Kyc.Api/                 # HTTP API, Controllers, Middleware
+├── Kyc.Api/                 # HTTP API, Minimal API Endpoints, Middleware
 └── Providers/
     ├── Kyc.Providers.Abstractions/  # Provider interfaces
     └── Kyc.Providers.Onfido/        # Onfido implementation
@@ -104,7 +104,7 @@ src/
 
 ### Key Patterns
 
-1. **CQRS**: Commands for writes, Queries for reads (via MediatR)
+1. **CQRS**: Commands for writes, Queries for reads (via custom lightweight Mediator)
 2. **Repository Pattern**: Abstract data access behind interfaces
 3. **Domain Events**: Decouple modules and enable async processing
 4. **Dependency Injection**: Wire up at composition root (API layer)

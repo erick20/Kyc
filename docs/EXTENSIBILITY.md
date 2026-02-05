@@ -479,7 +479,7 @@ services.AddKycAggregator(options => { ... })
     .UseProviderSelector<SmartProviderSelector>();
 ```
 
-## Adding MediatR Behaviors
+## Adding Pipeline Behaviors
 
 ### Caching Behavior
 
@@ -670,19 +670,18 @@ services.AddKycAggregatorCore()
 ### Additional Endpoints
 
 ```csharp
-// In your host project
-[ApiController]
-[Route("api/v1/verifications")]
-public class CustomVerificationsController : ControllerBase
+// In your host project, using Minimal APIs
+public static class CustomVerificationEndpoints
 {
-    [HttpPost("{verificationId}/resend-notification")]
-    public async Task<IActionResult> ResendNotification(
-        Guid verificationId,
-        [FromServices] IMediator mediator)
+    public static void MapCustomVerificationEndpoints(this IEndpointRouteBuilder app)
     {
-        var command = new ResendVerificationNotificationCommand(verificationId);
-        await mediator.Send(command);
-        return Ok();
+        app.MapPost("api/v1/verifications/{verificationId}/resend-notification",
+            async (Guid verificationId, IMediator mediator, CancellationToken ct) =>
+            {
+                var command = new ResendVerificationNotificationCommand(verificationId);
+                await mediator.Send(command, ct);
+                return Results.Ok();
+            });
     }
 }
 ```

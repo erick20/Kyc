@@ -208,23 +208,21 @@ public static class KycAggregatorServiceCollectionExtensions
         
         services.AddSingleton(options);
         
-        // Register core services
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(
-            typeof(KycAggregatorServiceCollectionExtensions).Assembly));
-        
+        // Register core services (custom mediator)
+        services.AddApplication(); // Registers mediator, validators, behaviors
+
         services.AddScoped<IVerificationService, VerificationService>();
         services.AddScoped<IApplicantService, ApplicantService>();
         services.AddSingleton<IProviderRegistry, ProviderRegistry>();
-        
+
         return new KycAggregatorBuilder(services, options);
     }
-    
+
     public static IKycAggregatorBuilder AddKycAggregatorCore(
         this IServiceCollection services)
     {
         // Core services only, no infrastructure
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(
-            typeof(StartVerificationCommand).Assembly));
+        services.AddApplication(); // Custom mediator with pipeline behaviors
         
         return new KycAggregatorBuilder(services, new KycAggregatorOptions());
     }

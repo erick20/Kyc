@@ -1,6 +1,6 @@
 # KYC Aggregator
 
-A modular, production-grade KYC (Know Your Customer) aggregation service built with .NET 8. Designed to integrate multiple KYC providers behind a unified interface, deployable as a standalone HTTP API or embeddable as a NuGet package.
+A modular, production-grade KYC (Know Your Customer) aggregation service built with .NET 10. Designed to integrate multiple KYC providers behind a unified interface, deployable as a standalone HTTP API or embeddable as a NuGet package.
 
 ## Overview
 
@@ -126,7 +126,7 @@ See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for detailed architectural documen
 
 ## Requirements
 
-- .NET 8.0 SDK or later
+- .NET 10.0 SDK or later
 - PostgreSQL 14+
 - Docker (optional, for containerized deployment)
 
