@@ -1,11 +1,11 @@
 using FluentValidation;
-using MediatR;
+using Kyc.Application.Common.Mediator;
 using ValidationException = Kyc.Application.Common.Exceptions.ValidationException;
 
 namespace Kyc.Application.Common.Behaviors;
 
 /// <summary>
-/// MediatR pipeline behavior that runs FluentValidation validators.
+/// Pipeline behavior that runs FluentValidation validators.
 /// </summary>
 public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull

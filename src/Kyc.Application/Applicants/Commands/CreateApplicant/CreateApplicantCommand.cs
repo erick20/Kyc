@@ -1,4 +1,4 @@
-using MediatR;
+using Kyc.Application.Common.Mediator;
 
 namespace Kyc.Application.Applicants.Commands.CreateApplicant;
 

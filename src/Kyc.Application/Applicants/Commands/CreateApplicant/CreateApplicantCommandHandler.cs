@@ -1,8 +1,8 @@
 using Kyc.Application.Common.Exceptions;
+using Kyc.Application.Common.Mediator;
 using Kyc.Domain.Entities;
 using Kyc.Domain.Repositories;
 using Kyc.Domain.ValueObjects;
-using MediatR;
 
 namespace Kyc.Application.Applicants.Commands.CreateApplicant;
 

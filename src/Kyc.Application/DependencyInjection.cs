@@ -1,6 +1,6 @@
 using FluentValidation;
 using Kyc.Application.Common.Behaviors;
-using MediatR;
+using Kyc.Application.Common.Mediator;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kyc.Application;
@@ -14,16 +14,13 @@ public static class DependencyInjection
     {
         var assembly = typeof(DependencyInjection).Assembly;
 
-        // Register MediatR
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(assembly);
-        });
+        // Register custom mediator and handlers
+        services.AddMediator(assembly);
 
         // Register validators
         services.AddValidatorsFromAssembly(assembly);
 
-        // Register pipeline behaviors
+        // Register pipeline behaviors (order matters - first registered executes first)
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

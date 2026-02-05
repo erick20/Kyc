@@ -1,10 +1,10 @@
-using MediatR;
+using Kyc.Application.Common.Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace Kyc.Application.Common.Behaviors;
 
 /// <summary>
-/// MediatR pipeline behavior that logs request handling.
+/// Pipeline behavior that logs request handling.
 /// </summary>
 public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull

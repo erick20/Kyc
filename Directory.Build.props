@@ -14,8 +14,8 @@
 
   <!-- Common metadata -->
   <PropertyGroup>
-    <Authors>Your Company</Authors>
-    <Company>Your Company</Company>
+    <Authors>Erik</Authors>
+    <Company>Erik</Company>
     <Product>KYC Aggregator</Product>
     <Copyright>Copyright © 2024 Your Company</Copyright>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 using Kyc.Api.Models.Requests;
 using Kyc.Api.Models.Responses;
 using Kyc.Application.Applicants.Commands.CreateApplicant;
-using MediatR;
+using Kyc.Application.Common.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kyc.Api.Controllers;
