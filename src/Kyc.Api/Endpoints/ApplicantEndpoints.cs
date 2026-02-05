@@ -2,37 +2,28 @@ using Kyc.Api.Models.Requests;
 using Kyc.Api.Models.Responses;
 using Kyc.Application.Applicants.Commands.CreateApplicant;
 using Kyc.Application.Common.Mediator;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Kyc.Api.Controllers;
+namespace Kyc.Api.Endpoints;
 
-/// <summary>
-/// Controller for managing applicants.
-/// </summary>
-[ApiController]
-[Route("api/v1/[controller]")]
-[Produces("application/json")]
-public class ApplicantsController : ControllerBase
+public static class ApplicantEndpoints
 {
-    private readonly IMediator _mediator;
-
-    public ApplicantsController(IMediator mediator)
+    public static IEndpointRouteBuilder MapApplicantEndpoints(this IEndpointRouteBuilder app)
     {
-        _mediator = mediator;
+        var group = app.MapGroup("api/v1/applicants")
+            .WithTags("Applicants");
+
+        group.MapPost("", CreateApplicant)
+            .WithName("CreateApplicant")
+            .Produces<ApiResponse<ApplicantResponse>>(StatusCodes.Status201Created)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<object>>(StatusCodes.Status409Conflict);
+
+        return app;
     }
 
-    /// <summary>
-    /// Creates a new applicant.
-    /// </summary>
-    /// <param name="request">The applicant creation request.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The created applicant.</returns>
-    [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<ApplicantResponse>), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateApplicantRequest request,
+    private static async Task<IResult> CreateApplicant(
+        CreateApplicantRequest request,
+        IMediator mediator,
         CancellationToken cancellationToken)
     {
         var command = new CreateApplicantCommand(
@@ -55,7 +46,7 @@ public class ApplicantsController : ControllerBase
             ExternalReference: request.ExternalReference,
             Metadata: request.Metadata);
 
-        var result = await _mediator.Send(command, cancellationToken);
+        var result = await mediator.Send(command, cancellationToken);
 
         var response = new ApplicantResponse(
             Id: result.Id,
@@ -64,9 +55,8 @@ public class ApplicantsController : ControllerBase
             Email: result.Email,
             CreatedAt: result.CreatedAt);
 
-        return CreatedAtAction(
-            nameof(Create),
-            new { id = response.Id },
+        return Results.Created(
+            $"/api/v1/applicants/{response.Id}",
             ApiResponse<ApplicantResponse>.Success(response));
     }
 }

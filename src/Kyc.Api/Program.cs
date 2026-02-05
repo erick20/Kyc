@@ -1,3 +1,4 @@
+using Kyc.Api.Endpoints;
 using Kyc.Api.Middleware;
 using Kyc.Application;
 using Kyc.Infrastructure;
@@ -10,7 +11,7 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -44,7 +45,8 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// Map minimal API endpoints
+app.MapApplicantEndpoints();
 
 app.Run();
 
