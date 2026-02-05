@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Kyc.Contracts</RootNamespace>
+    <AssemblyName>Kyc.Contracts</AssemblyName>
+  </PropertyGroup>
+
+  <!-- No dependencies - pure DTOs/contracts for consumers -->
+
+</Project>

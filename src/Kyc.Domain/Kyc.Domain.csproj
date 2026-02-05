@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Kyc.Domain</RootNamespace>
+    <AssemblyName>Kyc.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <!-- No external dependencies - pure domain logic -->
+
+</Project>
