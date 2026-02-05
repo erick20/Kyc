@@ -2,6 +2,8 @@ using Kyc.Api.Endpoints;
 using Kyc.Api.Middleware;
 using Kyc.Application;
 using Kyc.Infrastructure;
+using Kyc.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,10 +28,18 @@ builder.Services.AddSwaggerGen(options =>
 // Add application layers
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(
-    builder.Configuration.GetConnectionString("KycDatabase")
-    ?? throw new InvalidOperationException("Connection string 'KycDatabase' not found."));
+    builder.Configuration.GetConnectionString("kyc")
+    ?? throw new InvalidOperationException("Connection string 'kyc' not found."));
 
 var app = builder.Build();
+
+// Auto-migrate database in development
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<KycDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -48,7 +58,7 @@ app.UseAuthorization();
 // Map minimal API endpoints
 app.MapApplicantEndpoints();
 
-app.Run();
+await app.RunAsync();
 
 // Make Program class accessible for integration tests
 public partial class Program { }

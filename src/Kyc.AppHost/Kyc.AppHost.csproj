@@ -1,0 +1,11 @@
+<Project Sdk="Aspire.AppHost.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kyc.Api\Kyc.Api.csproj" />
+  </ItemGroup>
+</Project>
